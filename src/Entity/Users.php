@@ -117,10 +117,10 @@ class Users
         return $this;
     }
 	
-	public function crypted($password): ?string
-	{
-		return  sha1(md5($password));
-	}
+    public function crypted($password): ?string
+    {
+        return  sha1(md5($password));
+    }
 
     public function getEmail(): ?string
     {
