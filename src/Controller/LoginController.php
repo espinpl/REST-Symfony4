@@ -18,7 +18,7 @@ class LoginController extends AbstractController
     public function index(Request $request, SessionInterface $session)
     {
         $message = null;
-		$user = new Users();
+        $user = new Users();
         $form = $this->createForm(LoginType::class, new Login());
 
         if ($request->isMethod('POST'))
@@ -28,11 +28,11 @@ class LoginController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) 
             { 
                 $repository = $this->getDoctrine()->getRepository(Users::class);
-				$password = $user->crypted($form->get('password')->getData());
+                $password = $user->crypted($form->get('password')->getData());
 
                 $record = $repository->findOneBy([
                     'username' => $form->get('username')->getData(),
-					'password' => $password,
+                    'password' => $password,
                     'status' => 1
                 ]);
 
@@ -43,7 +43,6 @@ class LoginController extends AbstractController
                     $session->set('user', $form->get('username')->getData());
                     $message.= 'You are logged in.';
                 }
-                
             } else 
             {
                 $message = 'An error occured...'; 
