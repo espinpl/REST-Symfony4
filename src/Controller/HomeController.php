@@ -13,8 +13,6 @@ class HomeController extends AbstractController
      */
     public function index(SessionInterface $session)
     {
-        return $this->render('home/index.html.twig', [
-			'username' => $session->get('user')
-        ]);
+        return $this->render('home/index.html.twig', ['username' => $session->get('user')]);
     }
 }
