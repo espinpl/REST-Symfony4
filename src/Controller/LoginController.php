@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
 use App\Entity\Users;
 use App\Entity\Login;
 use App\Form\LoginType;
@@ -19,11 +18,8 @@ class LoginController extends AbstractController
     public function index(Request $request, SessionInterface $session)
     {
         $message = null;
+		$user = new Users();
         $form = $this->createForm(LoginType::class, new Login());
-
-        if ($session->get('user')) {
-            $message = '<p>Jesteś zalogowany '.$session->get('user').'</p>';
-        }
 
         if ($request->isMethod('POST'))
         {
@@ -32,29 +28,29 @@ class LoginController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) 
             { 
                 $repository = $this->getDoctrine()->getRepository(Users::class);
+				$password = $user->crypted($form->get('password')->getData());
 
                 $record = $repository->findOneBy([
                     'username' => $form->get('username')->getData(),
-                    'password' => sha1(md5($form->get('password')->getData())),			
+					'password' => $password,
                     'status' => 1
                 ]);
 
                 if (!$record) {
-                    $message.= 'Nie udało się zalogować! Brak użytkownika lub jeszcze nie aktywny.';
+                    $message.= 'You did not sign in correctly or your account is not activ.';
                 } else 
                 {
                     $session->set('user', $form->get('username')->getData());
-                    $message.= 'Zalogowany pozytywnie...';
+                    $message.= 'You are logged in.';
                 }
                 
             } else 
             {
-                $message = 'Error:'; 
+                $message = 'An error occured...'; 
             }
         }
 
         return $this->render('login/index.html.twig', [
-            'controller_name' => 'Logowanie',
             'message' => $message,
             'form' => $form->createView()
         ]);

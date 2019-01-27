@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * @method Users|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,6 +14,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
  */
 class UsersRepository extends ServiceEntityRepository
 {
+	
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Users::class);
@@ -28,11 +28,6 @@ class UsersRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
-
-        /*if (!$user) { 
-            throw new Exception('User not found.');
-        }*/
-        
         return $user;
-    }
+    }	
 }

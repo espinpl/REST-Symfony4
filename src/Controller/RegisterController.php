@@ -5,7 +5,6 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-
 use App\Entity\Users;
 use App\Form\UsersType;
 
@@ -27,11 +26,10 @@ class RegisterController extends AbstractController
             $entityManager->persist($users);
             $entityManager->flush();
 
-            $message = 'Użytkownik został dodany.'; 
+            $message = 'The user was created.'; 
         }
 
         return $this->render('register/index.html.twig', [
-            'controller_name' => 'Rejestracja',
             'message' => $message,
             'form' => $form->createView()
         ]);

@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
  */
-class Users
+class Users 
 {
     /**
      * @ORM\Id()
@@ -19,28 +19,47 @@ class Users
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=191, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Type(type="alnum")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 50
+     * )
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=191)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 50
+     * )
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=191, unique=true)
      * @Assert\Email
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=191, nullable=true)
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 30
+     * )
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=191, nullable=true)
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 50
+     * )
      */
     private $lastname;
 
@@ -55,10 +74,18 @@ class Users
      * @Assert\Type(type="\DateTime")
      */
     private $createdAt;
+	
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime")
+     * @Assert\Type(type="\DateTime")
+     */
+    private $updatedAt;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();	
+        $this->updatedAt = new \DateTime();			
     }
 
     public function getId(): ?int
@@ -85,10 +112,15 @@ class Users
 
     public function setPassword(string $password): self
     {
-        $this->password = sha1(md5($password));
+        $this->password = $this->crypted($password);
 
         return $this;
     }
+	
+	public function crypted($password): ?string
+	{
+		return sha1(md5($this->password));
+	}
 
     public function getEmail(): ?string
     {
@@ -146,6 +178,18 @@ class Users
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+	
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
